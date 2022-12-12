@@ -1,0 +1,65 @@
+import org.gradle.internal.jvm.Jvm
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'c'
+}
+
+group 'com.fsilence'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    applicationDefaultJvmArgs = ["-Djava.library.path="+file("${buildDir}/libs/hello/shared").absolutePath]
+}
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+model {
+    platforms {
+        x64 {
+            architecture "x86_64"
+        }
+    }
+
+    components {
+        flvmToy(NativeLibrarySpec) {
+            targetPlatform "x64"
+            binaries.all {
+                def jvmHome = Jvm.current().javaHome
+                if (targetPlatform.operatingSystem.macOsX) {
+                    cCompiler.args '-I', "${jvmHome}/include"
+                    cCompiler.args '-I', "${jvmHome}/include/darwin"
+                    cCompiler.args '-mmacosx-version-min=10.4'
+                    linker.args '-mmacosx-version-min=10.4'
+                } else if (targetPlatform.operatingSystem.linux) {
+                    cCompiler.args '-I', "${jvmHome}/include"
+                    cCompiler.args '-I', "${jvmHome}/include/linux"
+                    cCompiler.args '-D_FILE_OFFSET_BITS=64'
+                } else if (targetPlatform.operatingSystem.windows) {
+                    cCompiler.args "-I${jvmHome}/include"
+                    cCompiler.args "-I${jvmHome}/include/win32"
+                } else if (targetPlatform.operatingSystem.freeBSD) {
+                    cCompiler.args '-I', "${jvmHome}/include"
+                    cCompiler.args '-I', "${jvmHome}/include/freebsd"
+                }
+            }
+        }
+    }
+}
+
+classes.dependsOn 'flvmToySharedLibrary'
