@@ -6,15 +6,15 @@
 ////    id 'c'
 //    id 'cpp'
 //}
-
-//include "flCompiler"
-
-group 'com.fsilence'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
+//
+////include "flCompiler"
+//
+//group 'com.fsilence'
+//version '1.0-SNAPSHOT'
+//
+//repositories {
+//    mavenCentral()
+//}
 //
 //application {
 //    applicationDefaultJvmArgs = ["-Djava.library.path="+file("${buildDir}/libs/flvmToy/shared").absolutePath]

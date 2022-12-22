@@ -1,3 +1,10 @@
 plugins {
     id "application"
 }
+
+application {
+    println(rootDir)
+    applicationDefaultJvmArgs = ["-Djava.library.path="+file("${rootDir}/flvmToy/build/lib/main/debug").absolutePath]
+}
+
+mainClassName = "com.fsilence.flToy.Main"
